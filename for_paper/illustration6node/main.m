@@ -1,17 +1,16 @@
 %2011-05-14 Works on 6 node data to understand the joint optimization.
 %Note that because the probabilities are very high, the example is very
 %sensitive.
-%A sample workspace is provided to see the effcot of the two terms. This is
-%the one used in the paper http://arxiv.org/abs/1104.5061
-
-% DO THIS BEFORE EXECUTING
+%Ref paper http://arxiv.org/abs/1104.5061
 
 clc;
 clear all;
 close all;
 
+%% Some options
 shouldwePlot = 1;
-% Generating Data
+
+%% Generating Data
 Ntrain = 50; % training will contain Ntrain examples.
 %generate two traingular data clusters to illustrate the point
 %get a square
@@ -104,11 +103,7 @@ B2 = [B(2)-2:interval:B(2)+1.5];
 B3 = [B(3)-2:interval:B(3)+1.5];
 
 
-%%
+%% Exhausive execution to plot cost surfaces
 training_loss_grid;
 route_cost_grid;
-%%
 adding_the_two_costs;
-
-
-
