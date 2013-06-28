@@ -1,14 +1,14 @@
 %am_gurobi;
 function  [gurobilatency,fval_GAM] = am_gurobi(Lambda_T)
 
-global unLabeled numFeatures numTrain modelNumber C numUnlabeled prevGurobioutput routeCostT2 indexIteration permutG indexErr
-global routeInfo routeCostT2
+global unLabeled numFeatures costVersion C numUnlabeled prevGurobioutput routeCostT2 indexIteration permutG indexErr
+global routeInfo
 
 %Use off the Lambda_T value to get q.
 FunLabeled=unLabeled(:,1:numFeatures)*Lambda_T(1:numFeatures) + Lambda_T(end);
-if (modelNumber==1)
+if (costVersion==1)
     q = 1./(1+exp(-FunLabeled))'; % For Model 1
-elseif (modelNumber==2)
+elseif (costVersion==2)
     q = log(1+exp(FunLabeled))'; % For Model 2
 end
 
