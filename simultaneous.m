@@ -17,15 +17,12 @@ simultaneous_am = 1;
 global routeCostT2 routeInfo C1 nm_iterationCount; %Things which get updated by gurobiIterative.m
 global C numUnlabeled unLabeled numFeatures C0  C2 trainingdata numTrain costVersion; %Parameters for gurobiIterative.m
 
-%Globals for simultaneous_am
-global Lambda_T xPiT gurobilatency routeCostT2 routeInfo iterate_j C1;
-global indexIteration  costVersion numUnlabeled C unLabeled;
-global numFeatures C0 C2 trainingdata numTrain;
-global prevGurobioutput permutG indexErr;
+%Additional Globals for simultaneous_am
+global Lambda_T gurobilatency iterate_j indexIteration prevGurobioutput permutG indexErr;
 
 
 %% Step 1: Loading training and validation/test data.
-datafolderprefix = '../../../data/';
+datafolderprefix = '../data/';
 previous_config=0; %Previous runs were doing different normalization to train and test.
 load([datafolderprefix 'trainAndTestFull.mat']);
 if previous_config==1
@@ -106,7 +103,7 @@ if(simultaneous_am==1)
             routeCostIterationT1T3(indexIteration) = fval_AM;
             LambdaIteration(:,indexIteration) = Lambda_T;
 
-            display(['IterationIndex:' num2str(indexIteration) ' Lambda_T:' int2str(Lambda_T') ' perm:' int2str(permutG)]);
+            display(['IterationIndex:' num2str(indexIteration) ' Lambda_T:' num2str(Lambda_T') ' perm:' int2str(permutG)]);
             if((indexIteration>1) & (abs(fval_GAM-routeCostT2(indexIteration-1))<= 10^-4))
                 display('Stopped AM because of successive difference being small.');
                  break;
@@ -124,7 +121,6 @@ if(simultaneous_am==1)
         routeinfoAM_C1{iterate_j}   = routeInfo; %{indexIteration};
         routeCostAM_T2C1(iterate_j) = routeCostT2(indexIteration);
         %save(strcat(['result_AM_matlab_workspace_Feb7_Alternate_' int2str(costVersion) '_' int2str(decisionDataSize) '_' int2str(iterate_j) '.mat']));
-        display([num2str(iterate_j) '_' num2str(decisionDataSize) '_' num2str(costVersion)]);
     end % End of for loop over C1arr for AM+MILP
 %   save(strcat(['result_AM_mat_Feb7_' int2str(costVersion) '_' int2str(theja2sims) '_summary.mat']));
 end
