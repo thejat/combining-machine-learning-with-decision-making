@@ -1,0 +1,11 @@
+model ampl_combinedModel2.mod;
+data ampl_combined.dat;
+option solver bonmin;
+solve;
+display lambda;
+display y;
+display prob;
+display costTerm0;
+display costTerm1;
+display costTerm2;
+quit;
