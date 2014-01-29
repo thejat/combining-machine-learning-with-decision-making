@@ -1,7 +1,7 @@
 Introduction:
 For theory, see paper at http://arxiv.org/abs/1104.5061.
 
-Here we are providing code for doing the computation for simultaneous and and the sequential process. For the former, we provide three different ways:
+Here we are providing code for performing the experiments in Section  for simultaneous and the sequential process. For the former, we provide three different ways:
 (a) Solving using Bonmin via AMPL with some data processing with matlab (hours)
 (b) Solving using NelderMead and Gurobi in Matlab (minutes)
 (c) Solving using an Alternate Minimization approach with Gurobi in Matlab (minutes)

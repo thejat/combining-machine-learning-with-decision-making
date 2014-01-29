@@ -27,9 +27,9 @@ hold off;
 %% Cost2 Linearization 2013-6-25
 clear all
 close all
-M1M2 = 10;
+M1M2 = 2;
 zr = -M1M2:0.1:M1M2;
-e = exp(1);
+e = exp(1); 
 figure;
 plot(zr, log(1+e.^(zr)));
 hold on;
