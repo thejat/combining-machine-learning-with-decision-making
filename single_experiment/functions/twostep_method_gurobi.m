@@ -15,27 +15,6 @@ trainingloss            = -1;          %Training loss normalized.
 Funlabeled              = zeros(length(unLabeled(:,1)),1);   %function on graph nodes.
 q                       = zeros(length(unLabeled(:,1)),1);    %probabilities on graph nodes.
 
-if(flag_step1_twoStep == 1) % Starting Step 1
-
-    % % Step 1a : Finding the boundary for classification using (penalized)
-    % Logistic regression
-    
-    fminsearchLRopts = optimset('display','off','TolFun',1e-9, 'MaxIter', 5000,'MaxFunEvals',10000, 'TolX',1e-6);
-    [Lambda,fvalLR,exitflagLR,outputLR] = fminsearch(@(Lambda)(sum(log(1+(exp(-([trainingdata(:,1:numFeatures) ones(numTrain,1)]*Lambda).*trainingdata(:,end))))) + C2*norm(Lambda)^2),zeros(numFeatures+1,1),fminsearchLRopts);
-    functionValTrain=trainingdata(:,1:numFeatures)*Lambda(1:numFeatures) + Lambda(end);
-    trainingloss = sum(log(1+exp(-(trainingdata(:,end).*functionValTrain))));
-
-    % % Step 1b : Find probabilities q on test data which is fed to wTRP problem.
-
-    FunLabeled=unLabeled(:,1:numFeatures)*Lambda(1:numFeatures) + Lambda(end);
-    
-    if(modelNumber==1)
-        q=1./(1+exp(-FunLabeled))';     % For Model 1
-    elseif (modelNumber==2)
-        q = log(1+exp(FunLabeled))';    % For Model 2
-    end
-
-end % End of Step 1
 
 
 if(flag_step2_twoStep==1) % Starting Step 2

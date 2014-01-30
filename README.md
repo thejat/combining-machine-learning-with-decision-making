@@ -1,7 +1,7 @@
 Introduction:
 For theory, see paper at http://arxiv.org/abs/1104.5061.
 
-Here we are providing code for performing the experiments in Section  for simultaneous and the sequential process. For the former, we provide three different ways:
+Here we are providing code for performing the experiments in Section 5 for the simultaneous and the sequential processes. For the former, we provide three different ways:
 (a) Solving using Bonmin via AMPL with some data processing with matlab (hours)
 (b) Solving using NelderMead and Gurobi in Matlab (minutes)
 (c) Solving using an Alternate Minimization approach with Gurobi in Matlab (minutes)
@@ -15,7 +15,7 @@ Bonmin from COIN-OR
 Gurobi
 Gurobi-Mex by Wotao Yin available at http://www.convexoptimization.com/wikimization/index.php/Gurobi_Mex:_A_MATLAB_interface_for_Gurobi
 
-*One can also use Cplex and Cplex mex integration (look for Cplexint100) . Note that Starting from Gurobi 5+, Gurobi matively supports matlab interfacing but the code was written before this feature.
+*One can also use Cplex and Cplex mex integration (look for Cplexint100). Note that Starting from Gurobi 5+, Gurobi natively supports matlab interfacing but the code was written before this feature.
 
 
 The code is split among several directories.

@@ -6,7 +6,7 @@ clear all;
 format short;
 
 %Step 1: Loading training and validation/test data.
-dprefix = '../../../data/';
+dprefix = '../data/input/';
 load([dprefix 'trainAndTestFull.mat']);
 varXTest = var(xTest_o);
 xTest_o = (xTest_o - repmat(mean(xTest_o),23217,1))./repmat(sqrt(varXTest),23217,1);
