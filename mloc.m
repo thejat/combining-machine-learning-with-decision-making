@@ -56,7 +56,7 @@ clear temp_x temp_y temp_auc
 %% Forecasted probabilities and wTRP
 
 %Decision problem parameters
-decision_problem_nodes = 6;
+decision_problem_nodes = 8;
 cost_model_type = 1; % 1 and 2 vary the way predictions are used in wTRP objective.
 
 %Load decision making data
