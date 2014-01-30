@@ -55,23 +55,16 @@ clear temp_x temp_y temp_auc
 
 %% Forecasted probabilities and wTRP
 
-% decision problem setting
+%Decision problem parameters
 decision_problem_nodes = 6;
 cost_model_type = 1; % 1 and 2 vary the way predictions are used in wTRP objective.
 
-% Obtain probabilities q on decision problem data which is then fed to wTRP solver.
-
+%Load decision making data
 load([data_path decision_problem_data{decision_problem_nodes}]);%saves C, numUnlabeled, unlabeled to the workspace
 
-scores_unLabeled=[unLabeled(:,1:n_features) ones(numUnlabeled,1)]*lambda_model;
-if      (cost_model_type==1)
-    q = 1./(1+exp(-scores_unLabeled))';     % For cost model 1
-elseif  (cost_model_type==2)
-    q = log(1+exp(scores_unLabeled))';    % For cost model 2
-end
+% Obtain probabilities q on decision problem data which is then fed to wTRP solver.
+q = get_predicted_probabilities(unLabeled, n_features, lambda_model, cost_model_type);
 
-
+% Compute routes
 [sequential_route,sequential_cost] = solve_wTRP(C,q,[],[]);
 [naive_route,naive_cost]           = get_naive_solution_from(C,q);
-
-
