@@ -1,4 +1,4 @@
-function nm_data = nm_exhausive(param)
+function data = nm_exhausive(param)
 %This function solves for model and route for a given array of C1 values in
 %the param structure object using the NM+MILP algorithm.
 
@@ -13,21 +13,21 @@ for i=1:length(param.C1array)
                                         zeros(param.n_features+1,1),...
                                         param.fminsearch_opts);
     %collect information from this run
-    nm_data{i}.time_elapsed = toc;
-    nm_data{i}.lambda_model = lambda_model_nm;
-    nm_data{i}.total_objective = total_objective_nm;
+    data{i}.time_elapsed = toc;
+    data{i}.lambda_model = lambda_model_nm;
+    data{i}.total_objective = total_objective_nm;
     q = get_predicted_probabilities(param.unLabeled,...
                                 param.n_features, ...
                                 lambda_model_nm, ...
                                 param.cost_model_type);
-    nm_data{i}.forecasted = q;
-    [nm_data{i}.route,nm_data{i}.route_cost] = solve_wTRP(param.C,q,[],[]);
+    data{i}.forecasted = q;
+    [data{i}.route,data{i}.route_cost] = solve_wTRP(param.C,q,[],[]);
     
     %outputs probabilities, not scores but monotone wrt each other
     Y_hat_val   = 1./(1+exp(-param.X_val*lambda_model_nm));
     Y_hat_trn   = 1./(1+exp(-param.X_trn*lambda_model_nm));
     
-    [nm_data{i}.train_auc,nm_data{i}.test_auc] = performance_of_learning(...
+    [data{i}.train_auc,data{i}.test_auc] = performance_of_learning(...
                             param.Y_trn,...
                             Y_hat_trn,...
                             param.Y_val,...
