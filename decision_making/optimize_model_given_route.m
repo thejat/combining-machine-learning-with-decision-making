@@ -1,8 +1,6 @@
 function [lambda_model,fval_total] = optimize_model_given_route(route,param)
 
-%latencies
-latencies = route;
-optimal_route_cost = ;
+
 
 [lambda_model,fval_total,exitflag,output] = ...
     fminsearch(@(lambda_model)simultaneous_objective_function(...

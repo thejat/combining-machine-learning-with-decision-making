@@ -104,3 +104,36 @@ for i=1:length(nm_param.C1array)
                                 cost_model_type);
     [nm_data{i}.route,nm_data{i}.route_cost] = solve_wTRP(C,q,[],[]);
 end
+
+
+%% AM+MILP: Via Fminsearch+Gurobi
+    %Alternating minimization
+    % lambda(t+1) = min over lambda (total obj given a permutation pi(t))
+    % pi(t+1) = min over permutation space given a lambda lambda(t+1)
+
+am_param = nm_param;
+am_param.maximum_iterations  = 25;
+am_param.tolerance = 10^-4;
+
+for i=1:length(am_param.C1array)
+    C1 = am_param.C1array(i);
+    lambda_model_am = zeros(n_features+1,1);%initialize model
+    route_am = [2 3 4 5 6 7 1];%initialize route
+    objective_val_am = 0;
+    for iter_idx=1:am_param.maximum_iterations
+        prev_objective_val_am = objective_val_am;
+        
+        %lambda(t+1) = min over lambda (total obj given a permutation pi(t))
+        [lambda_model_am,objective_val_am] = optimize_model_given_route(route_am,am_param);
+        
+        % pi(t+1) = min over permutation space given a lambda lambda(t+1)
+        [route_am,route_cost_am] = ...
+            optimize_route_given_model(lambda_model_am,am_param);
+
+        % Less than am_maximum_iterations if possible
+        if (abs(prev_objective_val_am - objective_val_am)<= am_param.tolerance)
+            fprintf('Stopping AM because objecitve has stabilized at iteration %d.\n',iter_idx);
+            break;
+        end
+    end
+end % End of for loop over am_param.C1array for AM+MILP
