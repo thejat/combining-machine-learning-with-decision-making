@@ -1,19 +1,11 @@
-%Simultaneous Process described in the ML&TRP Paper.
-
-clc; close all; clear all;
-
-
-
-
-%% AM+MILP: Via Fminsearch+Gurobi
+% AM+MILP: Via Fminsearch+Gurobi
     %Alternating minimization
     % lambda(t+1) = min over lambda (total obj given a permutation pi(t))
     % pi(t+1) = min over permutation space given a lambda lambda(t+1)
-simultaneous_am = 1;
 %Additional Globals for simultaneous_am
 global Lambda_T gurobilatency iterate_j indexIteration prevGurobioutput permutG indexErr;
-
 gurobilatency = zeros(numUnlabeled, 1);
+
 for iterate_j=1:length(C1arr)
     C1          = C1arr(iterate_j);
     opts_AM     = optimset('display','off','TolFun',1e-6, 'MaxIter', 5000,'MaxFunEvals',10000, 'TolX',1e-6);
@@ -47,6 +39,4 @@ for iterate_j=1:length(C1arr)
     fvalC1_AM(:,iterate_j)      = fval_AM;
     routeinfoAM_C1{iterate_j}   = routeInfo; %{indexIteration};
     routeCostAM_T2C1(iterate_j) = routeCostT2(indexIteration);
-    %save(strcat(['result_AM_matlab_workspace_Feb7_Alternate_' int2str(costVersion) '_' int2str(decisionDataSize) '_' int2str(iterate_j) '.mat']));
 end % End of for loop over C1arr for AM+MILP
-%   save(strcat(['result_AM_mat_Feb7_' int2str(costVersion) '_' int2str(theja2sims) '_summary.mat']));

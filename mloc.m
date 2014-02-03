@@ -72,7 +72,6 @@ q = get_predicted_probabilities(unLabeled, n_features, lambda_model, cost_model_
 
 %% NM+MILP: Via Fminsearch+CPLEX
 
-C2 = regularize_coeff;   %Default coefficients of each of the terms in OBJ.
 %C1arr = [0.005 0.01 0.05 0.1 0.5 1]; %Perfect for 7 node data for cost type 1.
 %C1arr = [0.005 0.05  0.1 0.2 0.5 1]; %Perfect for 7 node data and cost type 2.
 C1arr = [0.85];
@@ -81,7 +80,7 @@ objective_param.unLabeled = unLabeled;
 objective_param.n_features = n_features;
 objective_param.cost_model_type = cost_model_type;
 objective_param.C0 = C0;
-objective_param.C2 = C2;
+objective_param.C2 = regularize_coeff;%the best one chosen from sequential
 objective_param.X = X_trn;
 objective_param.Y = Y_trn;
 objective_param.C = C;
