@@ -9,7 +9,7 @@ RandStream.setGlobalStream(s);
 
 %% Settings
 data_path = '../data/intermediate/';
-decision_problem_data  = {'','','','','','SixNodeData.mat','SevenNodeData.mat','EightNodeData.mat'}; %index = number of nodes
+decision_problem_data  = {'','','','','','SixNodeData.mat','SevenNodeData.mat','EightNodeData.mat','','TenNodeData.mat'}; %index = number of nodes
 
 %change into a_b names
 
@@ -68,3 +68,44 @@ q = get_predicted_probabilities(unLabeled, n_features, lambda_model, cost_model_
 % Compute routes
 [sequential_route,sequential_cost] = solve_wTRP(C,q,[],[]);
 [naive_route,naive_cost]           = get_naive_solution_from(C,q);
+
+
+%% NM+MILP: Via Fminsearch+CPLEX
+
+C2 = regularize_coeff;   %Default coefficients of each of the terms in OBJ.
+%C1arr = [0.005 0.01 0.05 0.1 0.5 1]; %Perfect for 7 node data for cost type 1.
+%C1arr = [0.005 0.05  0.1 0.2 0.5 1]; %Perfect for 7 node data and cost type 2.
+C1arr = [0.85];
+
+objective_param.unLabeled = unLabeled;
+objective_param.n_features = n_features;
+objective_param.cost_model_type = cost_model_type;
+objective_param.C0 = C0;
+objective_param.C2 = C2;
+objective_param.X = X_trn;
+objective_param.Y = Y_trn;
+objective_param.C = C;
+for i=1:length(C1arr)
+    objective_param.C1 = C1arr(i);
+    tic
+    opts_fminsearch_nm = optimset('display','off','TolFun',1e-6, 'MaxIter', 5000,'MaxFunEvals',10000, 'TolX',1e-6);    
+    [lambda_model_nm,total_objective_nm,exitflag_nm,output_nm] = ...
+        fminsearch(@(lambda_model_nm)simultaneous_objective_function(...
+                                        lambda_model_nm,...
+                                        objective_param),...
+                                        zeros(n_features+1,1),...
+                                        opts_fminsearch_nm);
+    %collect information from this run
+    nm_data{i}.time_elapsed = toc;
+    nm_data{i}.lambda_model = lambda_model_nm;
+    nm_data{i}.total_objective = total_objective_nm;
+    q = get_predicted_probabilities(unLabeled,...
+                                n_features, ...
+                                lambda_model, ...
+                                cost_model_type);
+    [route,fval] = solve_wTRP(C,q,[],[]);
+    nm_data{i}.route= NaN;
+    nm_data{i}.route_cost= NaN;
+    clear q route fval lambda_model_nm total_objective_nm exitflag_nm ...
+        output_nm
+end
