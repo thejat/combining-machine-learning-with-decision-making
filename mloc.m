@@ -71,26 +71,25 @@ q = get_predicted_probabilities(unLabeled, n_features, lambda_model, cost_model_
 
 %% NM+MILP: Via Fminsearch+CPLEX
 
-%C1arr = [0.005 0.01 0.05 0.1 0.5 1]; %for 7 node data for cost type 1.
-%C1arr = [0.005 0.05  0.1 0.2 0.5 1]; %for 7 node data and cost type 2.
-C1arr = [1];
-
+nm_param.X = X_trn;
+nm_param.Y = Y_trn;
+nm_param.C = C;
 nm_param.unLabeled = unLabeled;
 nm_param.n_features = n_features;
 nm_param.cost_model_type = cost_model_type;
 nm_param.C0 = 1000;
+%nm_param.C1array = [0.005 0.01 0.05 0.1 0.5 1]; %for 7 node data for cost type 1.
+%nm_param.C1array = [0.005 0.05  0.1 0.2 0.5 1]; %for 7 node data and cost type 2.
+nm_param.C1array = [0.001];
 nm_param.C2 = nm_param.C0*regularize_coeff;%the best one chosen from sequential
-nm_param.X = X_trn;
-nm_param.Y = Y_trn;
-nm_param.C = C;
 nm_param.fminsearch_opts = optimset('display','off','TolFun',1e-4,...
                                 'MaxIter', 500,'MaxFunEvals',1000,...
                                 'TolX',1e-3); 
-for i=1:length(C1arr)
-    nm_param.C1 = C1arr(i);
+for i=1:length(nm_param.C1array)
+    nm_param.C1 = nm_param.C1array(i);
     tic
     [lambda_model_nm,total_objective_nm,exitflag_nm,output_nm] = ...
-        fminsearch(@(lambda_model_nm)simultaneous_objective_function(...
+        fminsearch(@(lambda_model_nm)nm_objective_function(...
                                         lambda_model_nm,...
                                         nm_param),...
                                         zeros(n_features+1,1),...
