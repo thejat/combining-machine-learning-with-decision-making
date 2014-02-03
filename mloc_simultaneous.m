@@ -2,41 +2,30 @@
     %Alternating minimization
     % lambda(t+1) = min over lambda (total obj given a permutation pi(t))
     % pi(t+1) = min over permutation space given a lambda lambda(t+1)
-%Additional Globals for simultaneous_am
-global Lambda_T gurobilatency iterate_j indexIteration prevGurobioutput permutG indexErr;
-gurobilatency = zeros(numUnlabeled, 1);
 
-for iterate_j=1:length(C1arr)
-    C1          = C1arr(iterate_j);
-    opts_AM     = optimset('display','off','TolFun',1e-6, 'MaxIter', 5000,'MaxFunEvals',10000, 'TolX',1e-6);
-    MaxIter     = 25;
-    Lambda_T    = zeros(numFeatures+1,1);
-    prevGurobioutput = [zeros(numUnlabeled-1,1) eye(numUnlabeled-1,numUnlabeled-1); 1 zeros(1,numUnlabeled-1)];
-    indexErr    = 0;
+am_param = nm_param;
+am_param.fminsearch_opts = nm_fminsearch_opts;
+am_param.maximum_iterations  = 25;
 
-    tic
-    for indexIteration=1:MaxIter
-        [Lambda_T,fval_AM,exitflag,output_AM] = fminsearch(@am_lambda,Lambda_T,opts_AM);
-        [gurobilatency,fval_GAM] = am_gurobi(Lambda_T);
+for i=1:length(C1arr)
+    C1 = C1arr(i);
+    lambda_model_am = zeros(n_features+1,1);%initialize model
+    route_am = [2 3 4 5 6 7 1];%initialize route
 
-        routeCostIterationT1T3(indexIteration) = fval_AM;
-        LambdaIteration(:,indexIteration) = Lambda_T;
+    for iter_idx=1:am_param.maximum_iterations
+        
+        %lambda(t+1) = min over lambda (total obj given a permutation pi(t))
+        [lambda_model_am] = optimize_model_given_route(route_am,am_param);
+        
+        % pi(t+1) = min over permutation space given a lambda lambda(t+1)
+        [route_am,route_cost_am] = ...
+            optimize_route_given_model(lambda_model_am,am_param);
 
-        display(['IterationIndex:' num2str(indexIteration) ' Lambda_T:' num2str(Lambda_T') ' perm:' int2str(permutG)]);
-        if((indexIteration>1) & (abs(fval_GAM-routeCostT2(indexIteration-1))<= 10^-4))
+        
+        % Less than am_maximum_iterations if possible
+        if((iter_idx>1) && (abs(fval)<= 10^-4))
             display('Stopped AM because of successive difference being small.');
-             break;
-         elseif (indexErr>MaxIter/5)
-             routeCostT2(indexIteration) = routeCostT2(indexIteration-1);
-             display('Stopped AM because indexErr was greater than MaxIter/5!');
              break;
          end
     end
-    timeC1_AM(iterate_j) = toc;
-
-    iterationCount(iterate_j)   = indexIteration;
-    LambdaC1_AM(:,iterate_j)    = Lambda_T;
-    fvalC1_AM(:,iterate_j)      = fval_AM;
-    routeinfoAM_C1{iterate_j}   = routeInfo; %{indexIteration};
-    routeCostAM_T2C1(iterate_j) = routeCostT2(indexIteration);
 end % End of for loop over C1arr for AM+MILP

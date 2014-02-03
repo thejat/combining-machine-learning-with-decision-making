@@ -35,7 +35,6 @@ clear avg_X_trn var_X_trn xTrain_o yTrain_o xTest_o yTest_o
 %% Sequential and Naive methods: Prediction
 
 %prediction setting
-C0    = 1; %normalized training error coefficient
 C2_coeff_range = [0.02 0.05 0.1 0.5];%l2 regularization coefficient
 n_folds   = 1;
 n_repeats = 1;
@@ -56,7 +55,7 @@ clear temp_x temp_y temp_auc
 %% Forecasted probabilities and wTRP
 
 %Decision problem parameters
-decision_problem_nodes = 8;
+decision_problem_nodes = 7;
 cost_model_type = 1; % 1 and 2 vary the way predictions are used in wTRP objective.
 
 %Load decision making data
@@ -72,39 +71,37 @@ q = get_predicted_probabilities(unLabeled, n_features, lambda_model, cost_model_
 
 %% NM+MILP: Via Fminsearch+CPLEX
 
-%C1arr = [0.005 0.01 0.05 0.1 0.5 1]; %Perfect for 7 node data for cost type 1.
-%C1arr = [0.005 0.05  0.1 0.2 0.5 1]; %Perfect for 7 node data and cost type 2.
-C1arr = [0.85];
+%C1arr = [0.005 0.01 0.05 0.1 0.5 1]; %for 7 node data for cost type 1.
+%C1arr = [0.005 0.05  0.1 0.2 0.5 1]; %for 7 node data and cost type 2.
+C1arr = [1];
 
-objective_param.unLabeled = unLabeled;
-objective_param.n_features = n_features;
-objective_param.cost_model_type = cost_model_type;
-objective_param.C0 = C0;
-objective_param.C2 = regularize_coeff;%the best one chosen from sequential
-objective_param.X = X_trn;
-objective_param.Y = Y_trn;
-objective_param.C = C;
+nm_param.unLabeled = unLabeled;
+nm_param.n_features = n_features;
+nm_param.cost_model_type = cost_model_type;
+nm_param.C0 = 1000;
+nm_param.C2 = nm_param.C0*regularize_coeff;%the best one chosen from sequential
+nm_param.X = X_trn;
+nm_param.Y = Y_trn;
+nm_param.C = C;
+nm_param.fminsearch_opts = optimset('display','off','TolFun',1e-4,...
+                                'MaxIter', 500,'MaxFunEvals',1000,...
+                                'TolX',1e-3); 
 for i=1:length(C1arr)
-    objective_param.C1 = C1arr(i);
+    nm_param.C1 = C1arr(i);
     tic
-    opts_fminsearch_nm = optimset('display','off','TolFun',1e-6, 'MaxIter', 5000,'MaxFunEvals',10000, 'TolX',1e-6);    
     [lambda_model_nm,total_objective_nm,exitflag_nm,output_nm] = ...
         fminsearch(@(lambda_model_nm)simultaneous_objective_function(...
                                         lambda_model_nm,...
-                                        objective_param),...
+                                        nm_param),...
                                         zeros(n_features+1,1),...
-                                        opts_fminsearch_nm);
+                                        nm_param.fminsearch_opts);
     %collect information from this run
     nm_data{i}.time_elapsed = toc;
     nm_data{i}.lambda_model = lambda_model_nm;
     nm_data{i}.total_objective = total_objective_nm;
     q = get_predicted_probabilities(unLabeled,...
                                 n_features, ...
-                                lambda_model, ...
+                                lambda_model_nm, ...
                                 cost_model_type);
-    [route,fval] = solve_wTRP(C,q,[],[]);
-    nm_data{i}.route= NaN;
-    nm_data{i}.route_cost= NaN;
-    clear q route fval lambda_model_nm total_objective_nm exitflag_nm ...
-        output_nm
+    [nm_data{i}.route,nm_data{i}.route_cost] = solve_wTRP(C,q,[],[]);
 end
