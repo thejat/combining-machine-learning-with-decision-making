@@ -82,9 +82,8 @@ simultaneous_param.unLabeled = unLabeled;
 simultaneous_param.n_features = n_features;
 simultaneous_param.cost_model_type = cost_model_type;
 simultaneous_param.C0 = 1000;
-%simultaneous_param.C1array = [0.005 0.01 0.05 0.1 0.5 1]; %for 7 node data for cost type 1.
+simultaneous_param.C1array = [0.005 0.01 0.015 0.02 0.025 0.03 0.035 0.04]; %for 7 node data for cost type 1.
 %simultaneous_param.C1array = [0.005 0.05  0.1 0.2 0.5 1]; %for 7 node data and cost type 2.
-simultaneous_param.C1array = [0.001];
 simultaneous_param.C2 = simultaneous_param.C0*regularize_coeff;%the best one chosen from sequential
 simultaneous_param.fminsearch_opts = optimset('display','off','TolFun',1e-4,...
                                 'MaxIter', 500,'MaxFunEvals',1000,...
@@ -93,9 +92,17 @@ simultaneous_param.am_maximum_iterations  = 25;
 simultaneous_param.am_tolerance = 10^-4;
 
 %NM+MILP: Via Fminsearch+CPLEX
-nm_data = nm_exhausive(simultaneous_param);
+%nm_data = simultaneous_exhausive(simultaneous_param,'NM');
 
 %AM+MILP: Via Fminsearch+Gurobi: Alternating minimization
 % lambda(t+1) = min over lambda (total obj given a permutation pi(t))
 % pi(t+1) = min over permutation space given a lambda lambda(t+1)
-am_data = am_exhausive(simultaneous_param);% 
+am_data = simultaneous_exhausive(simultaneous_param,'AM');
+
+
+for i=1:length(am_data)
+    fprintf('%d: train auc: %.3f test  auc: %.3f\n',i,am_data{i}.train_auc,am_data{i}.test_auc);
+end
+for i=1:length(am_data)
+    fprintf('%d: route: %s\n',i,num2str(am_data{i}.route));
+end
