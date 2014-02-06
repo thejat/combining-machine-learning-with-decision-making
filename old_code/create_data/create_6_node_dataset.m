@@ -6,7 +6,7 @@ close all;
 
 %sample six indices
 format long;
-load ../data/dat_0.mat;
+load ../data/input/bronx/dat_0.mat;
 
 M = 6; % Number of test points coresponding tothe physical space.
 

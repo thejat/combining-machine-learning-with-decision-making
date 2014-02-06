@@ -1,11 +1,47 @@
 %Choosing 10 nodes from a grid selected arbitrarily 2011-01-30
 
+
+
+
+%Additional Information : Using G-Earth
+% long
+% lat
+% 
+% sw
+% 73°55'33.60"W
+%  40°49'32.02"N
+% 
+% 40.82556
+% -73.92583
+% 
+%  73°54'35.87"W
+%  40°49'32.02"N
+% 
+% 
+% ne
+%  73°54'35.87"W
+%  40°50'6.37"N
+% 
+% 40.835
+% -73.91
+% 
+% 
+%  73°55'33.60"W
+%  40°50'6.37"N
+% 
+% 
+% Need all coordinates between these two points:
+% step 1: all points betweenn -73.91 to -73.92583
+% 
+% step 2: among these, all points between 40.82556 and 40.835
+
+
 clc;
 clear all;
 close all;
 
-load ../data/raw/StructureListFixedCablesRenamed.mat
-load ../data/dat_0.mat;
+load ../data/input/bronx/StructureListFixedCablesRenamed.mat
+load ../data/input/bronx/dat_0.mat;
 
 format long
 
@@ -126,39 +162,53 @@ dists_obtained_from_GMAPquery = [...
 
 numUnlabeled = 10;
 unLabeled = testdata(indexHandpick,:);
-save TenNodeData.mat numUnlabeled unLabeled dists_obtained_from_GMAPquery;
+%save TenNodeData_full.mat numUnlabeled unLabeled dists_obtained_from_GMAPquery;
+
+%% Create 7,8, 10 node datasets from above
 
 
+unLabeled_10node = unLabeled; clear unLabeled;
 
+dists_obtained_from_GMAPquery = dists_obtained_from_GMAPquery/100;
+% Casting the distances in a format amenable to Gurobi/ampl/Cplex.
+iterate_k=1;
+for iterate_i=1:numUnlabeled
+    for iterate_j=1:iterate_i-1
+        C_10node(iterate_i,iterate_j) = dists_obtained_from_GMAPquery(iterate_k,1);
+        C_10node(iterate_j,iterate_i) = C_10node(iterate_i,iterate_j);
+        iterate_k = iterate_k+1;
+    end
+end
 
-%Additional Information : Using G-Earth
-% long
-% lat
-% 
-% sw
-% 73°55'33.60"W
-%  40°49'32.02"N
-% 
-% 40.82556
-% -73.92583
-% 
-%  73°54'35.87"W
-%  40°49'32.02"N
-% 
-% 
-% ne
-%  73°54'35.87"W
-%  40°50'6.37"N
-% 
-% 40.835
-% -73.91
-% 
-% 
-%  73°55'33.60"W
-%  40°50'6.37"N
-% 
-% 
-% Need all coordinates between these two points:
-% step 1: all points betweenn -73.91 to -73.92583
-% 
-% step 2: among these, all points between 40.82556 and 40.835
+%% 10 node data
+C = C_10node;
+numUnlabeled = 10;
+unLabeled = unLabeled_10node;
+save TenNodeData.mat C numUnlabeled unLabeled;
+clear unLabeled C numUnlabeled;
+%% 7 node data
+numUnlabeled = 7;
+unLabeled = [unLabeled_10node(1:6,:); unLabeled_10node(9,:)] ;
+C = zeros(numUnlabeled,numUnlabeled);
+C(1:6,1:6) = C_10node(1:6,1:6);
+C(7,1:6) = C_10node(9,1:6);
+C(1:6,7) = C(7,1:6)';
+
+save SevenNodeData.mat C numUnlabeled unLabeled;
+clear unLabeled C numUnlabeled;
+
+%% 8 node data
+numUnlabeled = 8;
+unLabeled = [unLabeled_10node(1:6,:); unLabeled_10node(8:9,:)] ;
+C = zeros(numUnlabeled,numUnlabeled);
+C(1:6,1:6) = C_10node(1:6,1:6);
+C(7,1:6) = C_10node(8,1:6);
+C(1:6,7) = C(7,1:6)';
+C(8,1:6) = C_10node(9,1:6);
+C(8,7)   = C_10node(9,8);
+C(1:6,8) = C(8,1:6)';
+C(7,8) = C(8,7);
+
+save EightNodeData.mat C numUnlabeled unLabeled;
+clear unLabeled C numUnlabeled;
+
