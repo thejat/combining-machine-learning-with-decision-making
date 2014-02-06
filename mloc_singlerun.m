@@ -13,7 +13,7 @@ decision_nodes          = 7; %number of nodes in the decision problem.
     get_bronx_data(); %read Bronx data (features, labels, lats,longs)
 [param.C,param.unLabeled] = get_decision_data(decision_nodes,flag_single_experiment,param);
 
-param.cost_model_type = 1; % 1 and 2 vary the way predictions are used in wTRP objective.
+param.cost_model_type = 2; % 1 and 2 vary the way predictions are used in wTRP objective.
 param.C2_coeff_range  = [0.01 0.025 0.05 0.075];%l2 regularization coefficient range
 param.n_folds         = 10;
 param.n_repeats       = 3;
@@ -26,9 +26,9 @@ naive = naive_process(sequential.forecasted,param.C);%Can only run if forecasts 
 
 param.C0 = 1000;
 if (param.cost_model_type==1)
-    param.C1array = [0.005 0.01 0.015]; %for 7 node data for cost type 1.
+    param.C1array = 0.001*[.5 1 3 5]; %for 7 node data for cost type 1.
 else
-    param.C1array = [0.005 0.05  0.1 0.2 0.5 1]; %for 7 node data and cost type 2.
+    param.C1array = 0.001*[.1 .5 1 5]; %for 7 node data and cost type 2.
 end
 param.C2 = param.C0*sequential.regularized_coeff;%the best one chosen from sequential
 param.fminsearch_opts = optimset('display','off','TolFun',1e-4,...
