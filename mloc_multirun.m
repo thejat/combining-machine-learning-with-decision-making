@@ -1,11 +1,9 @@
-%This is the refactored version of the previous MLTRP codebase.
-%This is the main script to perform the experiemts in the corresponding
-%paper.
+%This performs an experiment to show the importance of prior knowledge on
+%prediction performance
 
 clc; clear all; close all;
 s = RandStream('mcg16807','Seed',0);
 RandStream.setGlobalStream(s); 
-% RandStream.setDefaultStream(s); %Use this for R2010 and less.
 
 %% Settings
 data_path = '../data/intermediate/';
@@ -32,7 +30,7 @@ clear avg_X_trn var_X_trn xTrain_o yTrain_o xTest_o yTest_o
 
 %tbd: change to a_b variable names for _o stuff
 
-%% Sequential and Naive methods: Prediction
+%% Sequential methods
 
 %prediction setting
 C2_coeff_range = [0.02 0.05 0.1 0.5];%l2 regularization coefficient range
@@ -61,13 +59,10 @@ q = get_predicted_probabilities(unLabeled, n_features, lambda_model, cost_model_
 
 % Compute routes
 [sequential.route,sequential.route_cost] = solve_wTRP(C,q,[],[]);
-[naive.route,naive.route_cost]           = get_naive_solution_from(C,q);
 
-%Logging other relevant information for naive and sequential processes
+%Logging other relevant information for sequential processes
 sequential.forecasted = q;
-naive.forecasted = q;
 sequential.lambda_model = lambda_model;
-naive.lambda_model = lambda_model;
 sequential.train_auc = train_auc;
 sequential.test_auc = test_auc;
 
