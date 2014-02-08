@@ -10,6 +10,15 @@ if (flag_single_experiment==1) %then supply the legacy data for single experimen
                             '../data/intermediate/TenNodeData.mat'}; %index = number of nodes
 
     load(single_exp_data{decision_nodes});%loads decision prob params C, (optional) numUnlabeled, unLabeled feature mat
+    
+    
+
+    %Experimental: Get rid od the 3rd feature col
+    fprintf('Removing third column of the unlabeled feature matrix.\n');
+    unLabeled = unLabeled(:,[1 2 4 5]);
+    %Experimental: end
+
+    
 else
     %do something... auto_data_generator()
     x = param;

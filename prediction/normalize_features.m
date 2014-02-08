@@ -1,7 +1,7 @@
-function [X_trn,X_val] = normalize_features(xTrain_o,xTest_o,n_train)
+function [X_trn,X_val] = normalize_features(xTrain_o,xTest_o)
 %de-mean and normalize the data using training variance.
 
-
+n_train   = size(xTrain_o,1);
 var_X_trn = var(xTrain_o);
 avg_X_trn = mean(xTrain_o);
 
