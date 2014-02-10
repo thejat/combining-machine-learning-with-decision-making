@@ -24,7 +24,7 @@ else
     param.C1array = 0.001*[.1 .5 1 5]; %for 7 node data and cost type 2.
 end
 
-n_sample_size_pcts    = [.1:.1:1];
+n_sample_size_pcts    = [1]; %[.1:.1:1];
 
 for j=1:length(n_sample_size_pcts)
     
@@ -47,7 +47,7 @@ for j=1:length(n_sample_size_pcts)
 
 end
 
-%%
+%% Best test performance in terms of AUC
 for j=1:length(n_sample_size_pcts)
     fprintf('seqnt: %2d: train auc: %.3f test  auc: %.3f. ',j,sequential{j}.train_auc,sequential{j}.test_auc);
     temp_am1 = 0;
@@ -58,27 +58,18 @@ for j=1:length(n_sample_size_pcts)
         temp_am2 = max(temp_am2,am_data{j}{i}.test_auc);
     end
     fprintf('simul: %2d: train auc: %.3f test  auc: %.3f\n',j,temp_am1,temp_am2);
-%     for i=1:length(am_data{j})
-%         fprintf('%d: route: %s\n',i,num2str(am_data{j}{i}.route));
-%     end
 end
-
-%%
+%% Routes
 for j=1:length(n_sample_size_pcts)
-    fprintf('sequn: %d: route: %s\n',i,num2str(sequential{j}.route));
+    fprintf('sequn: %d,0: route: %s\n',j,num2str(sequential{j}.route));
     for i=1:length(am_data{j})
-        fprintf('simul: %d: route: %s\n',i,num2str(am_data{j}{i}.route));
+        fprintf('simul: %d,%d: route: %s\n',j,i,num2str(am_data{j}{i}.route));
     end
 end
-%%
+%% Forecasted probabilities
 for j=1:length(n_sample_size_pcts)
-    fprintf('seqnt: %2d: train auc: %.3f test  auc: %.3f. ',j,sequential{j}.train_auc,sequential{j}.test_auc);
-    temp_am1 = 0;
-    temp_am2 = 0;
+    fprintf('seqnt forecast %d: %s \n',j,num2str(sequential{j}.forecasted));
     for i=1:length(am_data{j})
-%         fprintf('simul: %d: train auc: %.3f test  auc: %.3f\n',i,am_data{j}{i}.train_auc,am_data{j}{i}.test_auc);
-        temp_am1 = max(temp_am1,am_data{j}{i}.train_auc);
-        temp_am2 = max(temp_am2,am_data{j}{i}.test_auc);
+        fprintf('simul forecast %d,%d: %s\n',j,i,num2str(am_data{j}{i}.forecasted));
     end
-    fprintf('simul: %2d: train auc: %.3f test  auc: %.3f\n',j,temp_am1,temp_am2);
 end
