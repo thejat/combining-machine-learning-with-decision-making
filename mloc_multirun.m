@@ -30,7 +30,10 @@ for j=1:length(n_sample_size_pcts)
     % Load prediction data
     param1 = get_data_given_sample_size(param0,n_sample_size_pcts(j));
     
-    for k = 1:n_multirun
+    k = 0;
+    while( k < n_multirun)
+        %increment k
+        k = k +1;
         
         % The follwing ensures we don't resample training when new decision
         % data is generated.
@@ -43,16 +46,17 @@ for j=1:length(n_sample_size_pcts)
 
         % Sequential Process
         sequential{j,k} = sequential_process(param);
-        if(sequential{j,k}.feasible~=0)
-            
-            %only run if forecasts are provided in sequential{j}
-            %naive = naive_process(sequential{j,k}.forecasted,param.C);
-
-            %%Simultaneous Process
-            param.C2 = param.C0*sequential{j,k}.regularized_coeff;%the best one chosen from sequential
-            am_data{j,k} = simultaneous_exhausive(param,'AM');% Alternating Minimization (default)
-            %%nm_data{j,k} = simultaneous_exhausive(param,'NM');% NM+MILP if needed
+        if(sequential{j,k}.feasible==0)%if infeasibility observed, then regenerate
+            k = k-1;
+            continue;
         end
+        %only run if forecasts are provided in sequential{j}
+        %naive = naive_process(sequential{j,k}.forecasted,param.C);
+
+        %%Simultaneous Process
+        param.C2 = param.C0*sequential{j,k}.regularized_coeff;%the best one chosen from sequential
+        am_data{j,k} = simultaneous_exhausive(param,'AM');% Alternating Minimization (default)
+        %%nm_data{j,k} = simultaneous_exhausive(param,'NM');% NM+MILP if needed
 
         param_sample_size{j,k} = param;
     end
