@@ -8,9 +8,9 @@ function [X_trn,Y_trn,X_val,Y_val,...
 prediction_data_path = '../data/input/bronx/';
 load([prediction_data_path 'dat_0.mat']);
 
-
-%Normalize prediction data
-[X_trn,X_val,avg_X_trn,var_X_trn] = normalize_features(xTrain_o,xTest_o);
+%Normalize prediction data: this could have happened after sub-selection but
+%chose to do it here.
+[X_trn,X_val,avg_X_trn,var_X_trn] = normalize_features(xTrain_o,xTest_o,-1,-1);%the last two arguments are for precomputed mean and variance values.
 Y_trn = yTrain_o;
 Y_val = yTest_o;
 
@@ -26,13 +26,6 @@ pos_subset_idx = ...
 
 X_trn = X_trn([pos_idx(pos_subset_idx);neg_idx(neg_subset_idx)]',:);
 Y_trn = Y_trn([pos_idx(pos_subset_idx);neg_idx(neg_subset_idx)]');
-
-%Experimental: Get rid od the 3rd feature col
-fprintf('Removing third column of the feature matrix.\n');
-X_trn = X_trn(:,[1 2 4 5]);%the 5th coulmn is all ones
-X_val = X_val(:,[1 2 4 5]);
-%Experimental: end
-
 
 n_features = size(X_trn,2);
 
