@@ -11,5 +11,5 @@ q = get_predicted_probabilities(param.unLabeled,...
                                 param.cost_model_type);
 
 % Compute route
-[optimal_route,optimal_route_cost] = solve_wTRP(param.C,q,[],[]); %todo: exception handling
+[optimal_route,optimal_route_cost,~] = solve_wTRP(param.C,q,[],[]); %todo: exception handling
 

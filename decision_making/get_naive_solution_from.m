@@ -20,5 +20,5 @@ for k=1:numUnlabeled
 end
 beq_additional = ones(numUnlabeled,1);
 
-[~,cost] = solve_wTRP(C,q,Aeq_additional,beq_additional);
+[~,cost,~] = solve_wTRP(C,q,Aeq_additional,beq_additional);
 

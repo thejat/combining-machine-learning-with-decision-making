@@ -1,7 +1,7 @@
-function [route,fval] = solve_wTRP(C,q,Aeq_additional,beq_additional)
+function [route,fval,feasible] = solve_wTRP(C,q,Aeq_additional,beq_additional)
 %This functions solve an instance of the wTRP problem given ALL parameters.
 
-
+feasible = 1;%default
 numUnlabeled = length(q);
 % Preparing the Objective and the constraints of the MILP to be passed to
 % Cplex.
@@ -14,16 +14,23 @@ try
    % is a maximization problem, negate the objective
 
    options = cplexoptimset;
-   options.Diagnostics = 'off';
+   options.Diagnostics = 'on';
    
    [x, fval, exitflag, output] = cplexmilp (c, Aineq, bineq, Aeq, beq,...
       [ ], [ ], [ ], lb, ub, vtypes, [ ], options);
    
-   fprintf ('wTRP solution status: %s \n', output.cplexstatusstring);
-   fprintf ('  Route cost: %f, ', fval);
-   Yij = round(reshape(x(numUnlabeled^2+1:end),numUnlabeled,numUnlabeled));
-   route = sequence_from_binary_mat(Yij);
-   fprintf ('route: %s\n',int2str(route));
+   if(output.cplexstatus==103)
+       route = [2 3 4 5 6 7 1];
+       fval = 0;
+       feasible = 0;
+       return;
+   else
+       fprintf ('wTRP solution status:%d: %s \n', output.cplexstatus,output.cplexstatusstring);
+       fprintf ('  Route cost: %f, ', fval);
+       Yij = round(reshape(x(numUnlabeled^2+1:end),numUnlabeled,numUnlabeled));
+       route = sequence_from_binary_mat(Yij);
+       fprintf ('route: %s\n',int2str(route));
+   end
 catch m
    throw (m);
 end

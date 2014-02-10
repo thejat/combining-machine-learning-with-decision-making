@@ -11,7 +11,11 @@ function [sequential] = sequential_process(param)
 q = get_predicted_probabilities(param.unLabeled, param.n_features, lambda_model, param.cost_model_type);
 
 % Compute routes
-[sequential.route,sequential.route_cost] = solve_wTRP(param.C,q,[],[]);
+[sequential.route,sequential.route_cost,sequential.feasible] = solve_wTRP(param.C,q,[],[]);
+
+if (sequential.feasible==0)
+    return;
+end
 
 %Logging other relevant information for the sequential processes
 sequential.forecasted = q;              %forecasted probabilities
