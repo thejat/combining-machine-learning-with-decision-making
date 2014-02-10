@@ -4,9 +4,8 @@ function q = get_predicted_probabilities(unLabeled, n_features, lambda_model, co
 %probabilities of failure.
 
 
-numUnlabeled = size(unLabeled,1);
 
-scores_unLabeled=[unLabeled(:,1:n_features) ones(numUnlabeled,1)]*lambda_model;
+scores_unLabeled=unLabeled*lambda_model;%bad practice; should be similar to get_data_given_sample_size.m in terms of feature selection.
 if      (cost_model_type==1)
     q = 1./(1+exp(-scores_unLabeled))';     % For cost model 1 (see paper)
 elseif  (cost_model_type==2)

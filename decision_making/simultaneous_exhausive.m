@@ -17,7 +17,7 @@ for i=1:length(param.C1array)
                                             param.fminsearch_opts);
     elseif(strcmp(str_algorithm,'AM'))
         %AM
-        lambda_model = zeros(param.n_features+1,1);%initialize model
+        lambda_model = zeros(param.n_features,1);%initialize model
         route_am = [2:size(param.unLabeled,1) 1];%initialize route
         total_objective = 0;
         for iter_idx=1:param.am_maximum_iterations

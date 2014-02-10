@@ -24,7 +24,7 @@ else
     param.C1array = 0.001*[.1 .5 1 5]; %for 7 node data and cost type 2.
 end
 
-n_sample_size_pcts    = [1]; %[.1:.1:1];
+n_sample_size_pcts    = [.1:.1:1];
 
 for j=1:length(n_sample_size_pcts)
     
@@ -33,10 +33,12 @@ for j=1:length(n_sample_size_pcts)
     
     % Load decision data
     [param_sample_size{j}.C,param_sample_size{j}.unLabeled] = ...
-        get_decision_data(decision_nodes,flag_single_experiment,param);
+        get_decision_data(decision_nodes,flag_single_experiment,param_sample_size{j});
 
     % Sequential Process
     sequential{j} = sequential_process(param_sample_size{j});
+    %only run if forecasts are provided in sequential{j}
+    %naive = naive_process(sequential{j}.forecasted,param_sample_size{j}.C);
 
     % Simultaneous Process
     param_sample_size{j}.C2 = param_sample_size{j}.C0*sequential{j}.regularized_coeff;%the best one chosen from sequential
@@ -59,4 +61,24 @@ for j=1:length(n_sample_size_pcts)
 %     for i=1:length(am_data{j})
 %         fprintf('%d: route: %s\n',i,num2str(am_data{j}{i}.route));
 %     end
+end
+
+%%
+for j=1:length(n_sample_size_pcts)
+    fprintf('sequn: %d: route: %s\n',i,num2str(sequential{j}.route));
+    for i=1:length(am_data{j})
+        fprintf('simul: %d: route: %s\n',i,num2str(am_data{j}{i}.route));
+    end
+end
+%%
+for j=1:length(n_sample_size_pcts)
+    fprintf('seqnt: %2d: train auc: %.3f test  auc: %.3f. ',j,sequential{j}.train_auc,sequential{j}.test_auc);
+    temp_am1 = 0;
+    temp_am2 = 0;
+    for i=1:length(am_data{j})
+%         fprintf('simul: %d: train auc: %.3f test  auc: %.3f\n',i,am_data{j}{i}.train_auc,am_data{j}{i}.test_auc);
+        temp_am1 = max(temp_am1,am_data{j}{i}.train_auc);
+        temp_am2 = max(temp_am2,am_data{j}{i}.test_auc);
+    end
+    fprintf('simul: %2d: train auc: %.3f test  auc: %.3f\n',j,temp_am1,temp_am2);
 end
