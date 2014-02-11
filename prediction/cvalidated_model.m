@@ -25,7 +25,11 @@ if (do_not_cv==0) % is false; that is, we should do cross validation, then:
                     lambda_model = logistic_regression(X_tmp,Y_tmp,coeffrange(i));
                 end
                 Y_tmp_hat_eval  = 1./(1+exp(-X_tmp_eval*lambda_model));
-                [~,~,~,auc_tmp_eval] = perfcurve(Y_tmp_eval,Y_tmp_hat_eval,1);
+                if(sum(Y_tmp_eval)==-1*length(Y_tmp_eval))%single class -1 checking
+                    auc_tmp_eval = .5;
+                else
+                    [~,~,~,auc_tmp_eval] = perfcurve(Y_tmp_eval,Y_tmp_hat_eval,1);
+                end
                 cv_matrix(i,j) = cv_matrix(i,j) + (1/nrepeats)*auc_tmp_eval; % AUC
             end
         end
