@@ -41,3 +41,4 @@ else
     C = (C + C'); %in Kms
     C = C*dist_matrix_norm_single_exp/norm(C);%to have the same norm as the single experiment datasets
 end
+% fprintf('Got decision data.');
