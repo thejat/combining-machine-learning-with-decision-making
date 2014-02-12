@@ -40,28 +40,47 @@ end
 var_train = var(auc.simul.train');
 var_test = var(auc.simul.test');
 
-figure(1)
-plot(mean(auc.seq.train'),'b'); hold on;
-plot(mean(auc.seq.test'),'b*-');
-plot(mean(auc.simul.train') - 1.96*sqrt(var_train),'g-'); 
-plot(mean(auc.simul.train'),'r'); 
-plot(mean(auc.simul.train') + 1.96*sqrt(var_train),'g-');
-plot(mean(auc.simul.test') - 1.96*sqrt(var_test),'k-');
-plot(mean(auc.simul.test'),'r*-');
-plot(mean(auc.simul.test') + 1.96*sqrt(var_test),'k-');
-hold off;
+% figure(1)
+% plot(mean(auc.seq.train'),'b'); hold on;
+% plot(mean(auc.seq.test'),'b*-');
+% plot(mean(auc.simul.train') - 1.96*sqrt(var_train),'g-'); 
+% plot(mean(auc.simul.train'),'r'); 
+% plot(mean(auc.simul.train') + 1.96*sqrt(var_train),'g-');
+% plot(mean(auc.simul.test') - 1.96*sqrt(var_test),'k-');
+% plot(mean(auc.simul.test'),'r*-');
+% plot(mean(auc.simul.test') + 1.96*sqrt(var_test),'k-');
+% hold off;
 
 
-figure(2)
+h = figure;
+width=2;
+set(0,'DefaultAxesLineWidth',width);
+set(0,'DefaultLineLineWidth',width);
+get(0,'Default');
+set(gca,'LineWidth',width);
 %positions = [n_sample_size_pcts n_sample_size_pcts+.02];
 %boxplot([auc.simul.train' auc.simul.test'],[1:2*n_sample_size_pcts],'positions',positions);
-subplot(2,1,1)
 boxplot(auc.simul.train',n_sample_size_pcts); hold on;
 plot(mean(auc.seq.train'),'go-'); hold off;
-subplot(2,1,2)
+ylabel('Training AUC','FontSize',18);
+xlabel('training sample size (percentage)','FontSize',18)
+set(gca,'FontSize',18,'fontWeight','bold');
+set(findall(h,'type','text'),'fontSize',18,'fontWeight','bold');
+saveas(h,'../draft/training_performance.png');%TEMPORARY
+h = figure;
+width=2;
+set(0,'DefaultAxesLineWidth',width);
+set(0,'DefaultLineLineWidth',width);
+get(0,'Default');
+set(gca,'LineWidth',width);
 boxplot(auc.simul.test',n_sample_size_pcts); hold on;
 plot(mean(auc.seq.test'),'go-'); hold off;
-
+xlabel('training sample size (percentage)','FontSize',18)
+ylabel('Test AUC','FontSize',18);
+% title('Performance of the two processes on randomly generated decision instances at various training sample sizes')
+set(gca,'FontSize',18,'fontWeight','bold');
+set(findall(h,'type','text'),'fontSize',18,'fontWeight','bold');
+saveas(h,'../draft/test_performance.png');%TEMPORARY
 
 
 % %% Routes
