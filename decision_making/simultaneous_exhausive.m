@@ -32,7 +32,7 @@ for i=1:length(param.C1array)
 
             % Less than am_maximum_iterations if possible
             if (abs(prev_total_objective - total_objective)<= param.am_tolerance)
-                fprintf('Stopping AM because objecitve has stabilized at iteration %d.\n',iter_idx);
+%                 fprintf('Stopping AM because objecitve has stabilized at iteration %d.\n',iter_idx);
                 break;
             end
         end
@@ -62,3 +62,5 @@ for i=1:length(param.C1array)
                             param.Y_val,...
                             Y_hat_val);
 end % End of for loop over param.C1array for AM+MILP
+
+% fprintf('Finished simultaneous exhausive.\n');
