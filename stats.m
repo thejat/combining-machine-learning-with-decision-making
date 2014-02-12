@@ -3,11 +3,14 @@
 
 clc;clear all;close all;
 result_path  = '/Users/theja/Downloads/temp/mloc_results_feb_2014/';%repetition, maybe move to startup? will get cleared unless do addpath
-load([result_path 'run_20140210_3pm_cost_type_1.mat']);
 
 %%
+load([result_path 'run_2014_02_10_1500hrs_cost_type_1.mat']);
 
+%%
+load([result_path 'run_2014_02_12_1000hrs_cost_type_2.mat']);
 
+%%
 close all;
 plot_performance(n_sample_size_pcts,n_multirun,sequential,am_data);
 
