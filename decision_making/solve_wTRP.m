@@ -14,7 +14,7 @@ try
    % is a maximization problem, negate the objective
 
    options = cplexoptimset;
-   options.Diagnostics = 'on';
+   options.Diagnostics = 'off';
    
    [x, fval, exitflag, output] = cplexmilp (c, Aineq, bineq, Aeq, beq,...
       [ ], [ ], [ ], lb, ub, vtypes, [ ], options);
@@ -25,11 +25,11 @@ try
        feasible = 0;
        return;
    else
-       fprintf ('wTRP solution status:%d: %s \n', output.cplexstatus,output.cplexstatusstring);
-       fprintf ('  Route cost: %f, ', fval);
+       %fprintf ('wTRP solution status:%d: %s \n', output.cplexstatus,output.cplexstatusstring);
+       %fprintf ('  Route cost: %f, ', fval);
        Yij = round(reshape(x(numUnlabeled^2+1:end),numUnlabeled,numUnlabeled));
        route = sequence_from_binary_mat(Yij);
-       fprintf ('route: %s\n',int2str(route));
+       %fprintf ('route: %s\n',int2str(route));
    end
 catch m
    throw (m);
