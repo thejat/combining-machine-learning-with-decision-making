@@ -1,5 +1,5 @@
 Introduction:
-For theory, see paper at http://arxiv.org/abs/1104.5061.
+For theory, see paper: [On combining machine learning with decision making](http://arxiv.org/abs/1104.5061).
 
 Here we are providing code for performing the experiments in Section 5 for the simultaneous and the sequential processes. For the former, we provide three different ways:
 (a) Solving using Bonmin via AMPL with some data processing with matlab (hours)
@@ -34,3 +34,12 @@ Go to folder for_paper/illustration6node/main.m where you can feed your learning
 
 
 Reference: http://arxiv.org/abs/1104.5061
+
+
+Todo
+
+ - Debug flag for fprintf statements in varius routines.
+ - parallelization
+ - cumulative saving being done. May not be spaceefficient.
+ - sequential should not do CV 100 times for the same dataset. Valuable time lost here.
+ - profiling
