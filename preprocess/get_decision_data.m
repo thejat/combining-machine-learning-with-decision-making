@@ -1,15 +1,16 @@
 function [C,unLabeled] = get_decision_data(decision_nodes,flag_single_experiment,param)
 
-%Legacy Single Experiment data paths
-single_exp_data   = {'','','','','',...
+
+if (flag_single_experiment==1) %then supply the legacy data for single experiment
+    %Legacy Single Experiment data paths
+    single_exp_data   = {'','','','','',...
                         '../data/intermediate/SixNodeData.mat',...
                         '../data/intermediate/SevenNodeData.mat',...
                         '../data/intermediate/EightNodeData.mat','',...
                         '../data/intermediate/TenNodeData.mat'}; %index = number of nodes
 
-load(single_exp_data{decision_nodes});%loads decision prob params C, (optional) numUnlabeled, unLabeled feature mat
+    load(single_exp_data{decision_nodes});%loads decision prob params C, (optional) numUnlabeled, unLabeled feature mat
 
-if (flag_single_experiment==1) %then supply the legacy data for single experiment
     
     %Remove the label information of the unLabeled matrix. It
     %is not needed.
@@ -20,8 +21,8 @@ if (flag_single_experiment==1) %then supply the legacy data for single experimen
 
 else
     
-    dist_matrix_norm_single_exp = norm(C);
-    clear C unLabeled numUnlabeled; %since these were loaded by default. see line 10.
+    dist_matrix_norm_single_exp = 50.6179;%norm(C);%This is the value for the C matrix for 7 node example which affects the range of C1 we can consider.
+    %clear C unLabeled numUnlabeled; %since these were loaded by default. see line 10.
      
     c = pi/180;
     distance =  @(lat1,lon1,lat2,lon2) 6370*2*asin(sqrt(sin(c*(lat1-lat2)/2)^2 + cos(c*lat1)*cos(c*lat2) * sin(c*(lon1-lon2)/2)^2));%Haversine formula
