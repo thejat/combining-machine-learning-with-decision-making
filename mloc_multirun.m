@@ -27,40 +27,22 @@ for j=1:length(param0.n_sample_size_pcts)
     
     k = 0;
     while( k < param0.n_multirun)
-        %increment k
-        k = k +1;
-        
-        % The follwing ensures we don't resample training when new decision
-        % data is generated.
-        clear param;
-        param = param1;
-        
+        k = k +1;        %increment k
+        clear param2;
+        param2 = param1;%ensures we don't resample training every k
         
         %Workflow: Get decision data, do sequential, do simultaneous
+        [sequential{j,k},am_data{j,k},param_sample_size{j,k}] = ...
+                                    mloc_workflow_wrapper(param2);
         
-        % Load decision data
-        [param.C,param.unLabeled] = ...
-            get_decision_data(param.decision_nodes,param.n_multirun,param);
-
-        % Sequential Process
-        sequential{j,k} = sequential_process(param);
         if(sequential{j,k}.feasible==0)%if infeasibility observed, then regenerate
             k = k-1;
-            param.n_bad_instances = param.n_bad_instances + 1;
             continue;
         end
-        %only run if forecasts are provided in sequential{j}
-        %naive = naive_process(sequential{j,k}.forecasted,param.C);
-
-        %%Simultaneous Process
-        param.C2 = param.C0*sequential{j,k}.regularized_coeff;%the best one chosen from sequential
-        am_data{j,k} = simultaneous_exhausive(param,'AM');% Alternating Minimization (default)
-        %%nm_data{j,k} = simultaneous_exhausive(param,'NM');% NM+MILP if needed
-
-        param_sample_size{j,k} = param;
+        
         fprintf('MLOC multirun: j:%2d, k:%2d finished.\n',j,k);
     end
-    save([param.result_path 'run_' ...
+    save([param0.result_path 'run_' ...
         datestr(now,'yyyy_mm_dd_HHMM') 'hrs_cost_type_' ...
-        num2str(param0.cost_model_type) param.str_addendum '.mat']);
+        num2str(param0.cost_model_type) param0.str_addendum '.mat']);
 end
