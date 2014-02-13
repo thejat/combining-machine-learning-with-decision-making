@@ -20,27 +20,30 @@ elseif(nargin==1)%the assume it is the n_sample_size_pcts array
 end
 
 
-
+time_loop_start = datevec(now);
 for j=1:length(param0.n_sample_size_pcts)
     % Load prediction data
     param1 = get_data_given_sample_size(param0,param0.n_sample_size_pcts(j));
     
+    param1 = sequential_training(param1); %does a single training for all decision instances
+    
     k = 0;
     while( k < param0.n_multirun)
         k = k +1;        %increment k
-        clear param2;
-        param2 = param1;%ensures we don't resample training every k
         
+        time_jk = datevec(now);
         %Workflow: Get decision data, do sequential, do simultaneous
         [sequential{j,k},am_data{j,k},param_sample_size{j,k}] = ...
-                                    mloc_workflow_wrapper(param2);
+                                    mloc_workflow_wrapper(param1);
         
         if(sequential{j,k}.feasible==0)%if infeasibility observed, then regenerate
             k = k-1;
             continue;
         end
-        
-        fprintf('MLOC multirun: j:%2d, k:%2d finished.\n',j,k);
+        fprintf(['MLOC multirun: j:%2d, k:%2d finished.' ...
+            ' Total elapsed time: %4.4f, this instance: %4.4f\n'],...
+            j,k,etime(datevec(now),time_loop_start),...
+                etime(datevec(now),time_jk));
     end
     save([param0.result_path 'run_' ...
         datestr(now,'yyyy_mm_dd_HHMM') 'hrs_cost_type_' ...
