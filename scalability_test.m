@@ -14,7 +14,7 @@ param1 = get_data_given_sample_size(param0,.1);%n_sample_size fixed to 10%
 param1 = sequential_training(param1); %does a single training for all decision instances
 time_loop_start = datevec(now);
 %%
-parpool
+parpool%matlabpool
 for j=1:length(decision_nodes_array)
     param1.decision_nodes = decision_nodes_array(j);
     parfor k=1:param0.n_multirun
