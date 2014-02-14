@@ -16,6 +16,7 @@ time_loop_start = datevec(now);
 %%
 parpool
 for j=1:length(decision_nodes_array)
+    param1.decision_nodes = decision_nodes_array(j);
     parfor k=1:param0.n_multirun
         time_loop{j,k} = datevec(now);
         %Workflow: Get decision data, do sequential, do simultaneous
