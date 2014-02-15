@@ -1,4 +1,4 @@
-function [] = plot_performance(n_sample_size_pcts,n_multirun,sequential,am_data)
+function [] = plot_learning_performance_subroutine(n_sample_size_pcts,n_multirun,sequential,am_data)
 
 
 
@@ -26,61 +26,66 @@ for j=1:length(n_sample_size_pcts)
         auc.simul.test(j,k) = temp_am2;
     end
 end
-
-
-% figure(1)
-% surf(auc.seq.train);
-% figure(2)
-% surf(auc.seq.test);
-% figure(3)
-% surf(auc.simul.train);
-% figure(4)
-% surf(auc.simul.test);
-
-var_train = var(auc.simul.train');
-var_test = var(auc.simul.test');
-
-% figure(1)
-% plot(mean(auc.seq.train'),'b'); hold on;
-% plot(mean(auc.seq.test'),'b*-');
-% plot(mean(auc.simul.train') - 1.96*sqrt(var_train),'g-'); 
-% plot(mean(auc.simul.train'),'r'); 
-% plot(mean(auc.simul.train') + 1.96*sqrt(var_train),'g-');
-% plot(mean(auc.simul.test') - 1.96*sqrt(var_test),'k-');
-% plot(mean(auc.simul.test'),'r*-');
-% plot(mean(auc.simul.test') + 1.96*sqrt(var_test),'k-');
-% hold off;
-
-
+%%
 h = figure;
 width=2;
 set(0,'DefaultAxesLineWidth',width);
 set(0,'DefaultLineLineWidth',width);
 get(0,'Default');
 set(gca,'LineWidth',width);
-%positions = [n_sample_size_pcts n_sample_size_pcts+.02];
-%boxplot([auc.simul.train' auc.simul.test'],[1:2*n_sample_size_pcts],'positions',positions);
-boxplot(auc.simul.train',n_sample_size_pcts); hold on;
-plot(mean(auc.seq.train'),'go-'); hold off;
-ylabel('Training AUC','FontSize',18);
+boxplot(auc.simul.train'- repmat(mean(auc.seq.train'),n_multirun,1),n_sample_size_pcts); hold on;
+plot(0:length(n_sample_size_pcts)+1,zeros(length(n_sample_size_pcts)+2,1),'g-');hold off;
+ylim([-.1 .1]);
+ylabel('Training AUC relative to Sequential','FontSize',18);
 xlabel('training sample size (percentage)','FontSize',18)
 set(gca,'FontSize',18,'fontWeight','bold');
 set(findall(h,'type','text'),'fontSize',18,'fontWeight','bold');
 saveas(h,'../draft/training_performance.png');%TEMPORARY
+
 h = figure;
 width=2;
 set(0,'DefaultAxesLineWidth',width);
 set(0,'DefaultLineLineWidth',width);
 get(0,'Default');
 set(gca,'LineWidth',width);
-boxplot(auc.simul.test',n_sample_size_pcts); hold on;
-plot(mean(auc.seq.test'),'go-'); hold off;
+boxplot(auc.simul.test'- repmat(mean(auc.seq.test'),n_multirun,1),n_sample_size_pcts); hold on;
+plot(0:length(n_sample_size_pcts)+1,zeros(length(n_sample_size_pcts)+2,1),'g-');hold off;
+ylim([-.1 .1]);
+ylabel('Test AUC relative to Sequential','FontSize',18);
 xlabel('training sample size (percentage)','FontSize',18)
-ylabel('Test AUC','FontSize',18);
-% title('Performance of the two processes on randomly generated decision instances at various training sample sizes')
 set(gca,'FontSize',18,'fontWeight','bold');
 set(findall(h,'type','text'),'fontSize',18,'fontWeight','bold');
 saveas(h,'../draft/test_performance.png');%TEMPORARY
+
+% h = figure;
+% width=2;
+% set(0,'DefaultAxesLineWidth',width);
+% set(0,'DefaultLineLineWidth',width);
+% get(0,'Default');
+% set(gca,'LineWidth',width);
+% %positions = [n_sample_size_pcts n_sample_size_pcts+.02];
+% %boxplot([auc.simul.train' auc.simul.test'],[1:2*n_sample_size_pcts],'positions',positions);
+% boxplot(auc.simul.train',n_sample_size_pcts); hold on;
+% plot(mean(auc.seq.train'),'go-'); hold off;
+% ylabel('Training AUC','FontSize',18);
+% xlabel('training sample size (percentage)','FontSize',18)
+% set(gca,'FontSize',18,'fontWeight','bold');
+% set(findall(h,'type','text'),'fontSize',18,'fontWeight','bold');
+% saveas(h,'../draft/training_performance.png');%TEMPORARY
+% h = figure;
+% width=2;
+% set(0,'DefaultAxesLineWidth',width);
+% set(0,'DefaultLineLineWidth',width);
+% get(0,'Default');
+% set(gca,'LineWidth',width);
+% boxplot(auc.simul.test',n_sample_size_pcts); hold on;
+% plot(mean(auc.seq.test'),'go-'); hold off;
+% xlabel('training sample size (percentage)','FontSize',18)
+% ylabel('Test AUC','FontSize',18);
+% % title('Performance of the two processes on randomly generated decision instances at various training sample sizes')
+% set(gca,'FontSize',18,'fontWeight','bold');
+% set(findall(h,'type','text'),'fontSize',18,'fontWeight','bold');
+% saveas(h,'../draft/test_performance.png');%TEMPORARY
 
 
 % %% Routes

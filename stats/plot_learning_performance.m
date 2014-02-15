@@ -1,7 +1,7 @@
 function [] = plot_learning_performance(result_path,cost_model_type)
 
 
-
+%%
 if(cost_model_type==1)
     load([result_path 'run_2014_02_12_1900hrs_cost_type_1_addendum.mat'],...
         'sequential','am_data','n_sample_size_pcts');
@@ -22,8 +22,7 @@ else
         sequential_addendum,am_data_addendum,n_sample_size_pcts_addendum);
 end
 
-
-close all;
+%%
 plot_learning_performance_subroutine(n_sample_size_pcts,n_multirun,sequential,am_data);
 
 

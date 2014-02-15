@@ -24,6 +24,7 @@ set(gca,'LineWidth',width);
 boxplot(time_elapsed',decision_nodes_array); hold on;
 xlabel('decision problem size (nodes)','FontSize',18)
 ylabel('Time elapsed (s)','FontSize',18);
+ylim([0 2500]);
 set(gca,'FontSize',18,'fontWeight','bold');
 set(findall(h,'type','text'),'fontSize',18,'fontWeight','bold');
 saveas(h,['../draft/figures/scaling_cost_type_' num2str(cost_model_type) '.png']);
