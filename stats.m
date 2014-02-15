@@ -10,4 +10,5 @@ cost_model_type = 1;
 plot_learning_performance(result_path,cost_model_type);
 
 %% Scaling performance
-plot_scale_performance(result_path,cost_model_type);
+plot_scale_performance(result_path,1);
+plot_scale_performance(result_path,2);
