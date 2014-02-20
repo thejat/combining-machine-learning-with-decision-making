@@ -1,4 +1,4 @@
-function [] = plot_learning_performance_subroutine(n_sample_size_pcts,n_multirun,sequential,am_data)
+function [] = plot_learning_performance_subroutine(n_sample_size_pcts,n_multirun,sequential,am_data,cost_model_type)
 
 
 
@@ -33,14 +33,17 @@ set(0,'DefaultAxesLineWidth',width);
 set(0,'DefaultLineLineWidth',width);
 get(0,'Default');
 set(gca,'LineWidth',width);
-boxplot(auc.simul.train'- repmat(mean(auc.seq.train'),n_multirun,1),n_sample_size_pcts); hold on;
+bh = boxplot(auc.simul.train'- repmat(mean(auc.seq.train'),n_multirun,1),n_sample_size_pcts); hold on;
+for i=1:size(bh,2)
+     set(bh(:,i),'linewidth',3);
+end
 plot(0:length(n_sample_size_pcts)+1,zeros(length(n_sample_size_pcts)+2,1),'g-');hold off;
-ylim([-.1 .1]);
+ylim([-.075 .075]);
 ylabel('Training AUC relative to Sequential','FontSize',18);
 xlabel('training sample size (percentage)','FontSize',18)
 set(gca,'FontSize',18,'fontWeight','bold');
 set(findall(h,'type','text'),'fontSize',18,'fontWeight','bold');
-saveas(h,'../draft/training_performance.png');%TEMPORARY
+saveas(h,['../draft/figures/training_performance_cost' int2str(cost_model_type) '.png']);%TEMPORARY
 
 h = figure;
 width=2;
@@ -48,14 +51,17 @@ set(0,'DefaultAxesLineWidth',width);
 set(0,'DefaultLineLineWidth',width);
 get(0,'Default');
 set(gca,'LineWidth',width);
-boxplot(auc.simul.test'- repmat(mean(auc.seq.test'),n_multirun,1),n_sample_size_pcts); hold on;
+bh = boxplot(auc.simul.test'- repmat(mean(auc.seq.test'),n_multirun,1),n_sample_size_pcts); hold on;
+for i=1:size(bh,2)
+     set(bh(:,i),'linewidth',3);
+end
 plot(0:length(n_sample_size_pcts)+1,zeros(length(n_sample_size_pcts)+2,1),'g-');hold off;
-ylim([-.1 .1]);
+ylim([-.075 .075]);
 ylabel('Test AUC relative to Sequential','FontSize',18);
 xlabel('training sample size (percentage)','FontSize',18)
 set(gca,'FontSize',18,'fontWeight','bold');
 set(findall(h,'type','text'),'fontSize',18,'fontWeight','bold');
-saveas(h,'../draft/test_performance.png');%TEMPORARY
+saveas(h,['../draft/figures/test_performance_cost' int2str(cost_model_type) '.png']);%TEMPORARY
 
 % h = figure;
 % width=2;

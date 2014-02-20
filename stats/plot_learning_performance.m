@@ -23,7 +23,7 @@ else
 end
 
 %%
-plot_learning_performance_subroutine(n_sample_size_pcts,n_multirun,sequential,am_data);
+plot_learning_performance_subroutine(n_sample_size_pcts,n_multirun,sequential,am_data,cost_model_type);
 
 
 % AUC of an all -1 guesser: No ordering means bad guesser.
