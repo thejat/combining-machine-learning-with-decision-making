@@ -7,6 +7,8 @@ result_path  = '../data/mloc_results_feb_2014/';%repetition, maybe move to start
 %% Learning performance
 plot_learning_performance(result_path,1);
 plot_learning_performance(result_path,2);
+plot_learning_cost_performance(result_path,1);
+plot_learning_cost_performance(result_path,2);
 
 %% Scaling performance
 plot_scale_performance(result_path,1);
