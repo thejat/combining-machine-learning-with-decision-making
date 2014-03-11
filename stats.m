@@ -11,3 +11,5 @@ plot_learning_performance(result_path,2);
 %% Scaling performance
 plot_scale_performance(result_path,1);
 plot_scale_performance(result_path,2);
+plot_train_scale_performance(result_path,1);
+plot_train_scale_performance(result_path,2);
