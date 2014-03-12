@@ -15,7 +15,7 @@ for j=1:length(n_sample_size_pcts)
         if(sequential{j,k}.feasible==0)
             continue;
         end
-        best_sim_test_auc = min([am_data{j,k}{1}.test_auc,...%HARDCODED
+        best_sim_test_auc = max([am_data{j,k}{1}.test_auc,...%HARDCODED
                                 am_data{j,k}{2}.test_auc,...
                                 am_data{j,k}{3}.test_auc,...
                                 am_data{j,k}{4}.test_auc]);
@@ -58,9 +58,12 @@ set(findall(h,'type','text'),'fontSize',18,'fontWeight','bold');
 saveas(h,['../draft/figures/training_decision_cost_performance_cost' int2str(cost_model_type) '.png']);%TEMPORARY
 
 %% Two simple hypothesis tests
+
 % H0: test stats are not very different
-[p,h,stats] = ranksum(sample_sim(:),sample_seq(:)) %h=1 implies reject the null at 5% significance level.
-[p,h,stats] = ranksum(sim_test_auc(:),seq_test_auc(:)) %h=1 implies reject the null at 5% significance level.
-% returns the p-value of a two-sided Wilcoxon rank sum test. ranksum tests the null hypothesis that data 
-%in x and y are samples from continuous distributions with equal medians, against the alternative that 
-%they are not. The test assumes that the two samples are independent. x and y can have different lengths.
+for j=1:length(n_sample_size_pcts)
+    [p1(j),h1(j),stats1{j}] = signtest(sample_sim(j,:),sample_seq(j,:),'tail','left'); %h=1 implies reject the null at 5% significance level.
+end
+
+for j=1:length(n_sample_size_pcts)
+    [p2{j},h2{j},stats2{j}] = signtest(sim_test_auc(j,:),seq_test_auc(j,:),'tail','right'); %h=0 implies do not reject the null at 5% significance level.
+end
